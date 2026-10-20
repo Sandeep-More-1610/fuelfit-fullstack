@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FuelFit — Gym & Fitness Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080808;
+  --surface: #101010;
+  --card: #141414;
+  --card2: #181818;
+  --border: #1e1e1e;
+  --border2: #282828;
+  --lime: #c6f135;
+  --lime-dim: #a8d020;
+  --red: #ff3b3b;
+  --text: #f5f5f5;
+  --muted: #555;
+  --light: #888;
+  --mid: #aaa;
+  --nav-h: 68px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  background: rgba(8,8,8,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 900; letter-spacing: 3px;
+  color: var(--lime); line-height: 1;
+  text-decoration: none;
+}
+.logo span { color: var(--text); }
+.nav-center { display: flex; gap: 2rem; }
+.nav-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px; color: var(--light);
+  text-decoration: none; transition: color 0.2s;
+  text-transform: uppercase;
+}
+.nav-link:hover { color: var(--lime); }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+.search-box {
+  position: relative; display: flex; align-items: center;
+}
+.search-box input {
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--text); border-radius: 8px; padding: 0.5rem 1rem 0.5rem 2.5rem;
+  font-family: 'Outfit', sans-serif; font-size: 0.85rem; width: 200px;
+  outline: none; transition: border-color 0.2s, width 0.3s;
+}
+.search-box input:focus { border-color: var(--lime); width: 240px; }
+.search-icon { position: absolute; left: 0.75rem; color: var(--muted); pointer-events: none; width: 15px; }
+.cart-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--lime); color: #000; border: none;
+  padding: 0.55rem 1.25rem; border-radius: 8px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem; font-weight: 700; letter-spacing: 2px;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+.cart-btn:hover { background: var(--lime-dim); transform: translateY(-2px); }
+.cart-badge {
+  background: var(--red); color: #fff; border-radius: 50%;
+  width: 20px; height: 20px; font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: calc(var(--nav-h) + 2rem) clamp(1rem,4vw,3rem) 4rem;
+  position: relative; overflow: hidden; text-align: center;
+}
+.hero-bg-text {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(6rem, 22vw, 22rem); font-weight: 900;
+  letter-spacing: 10px; white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(198,241,53,0.06);
+  pointer-events: none; user-select: none; line-height: 1;
+}
+.hero-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 4px; color: var(--lime);
+  text-transform: uppercase; margin-bottom: 1.25rem;
+  padding: 0.4rem 1rem; border: 1px solid rgba(198,241,53,0.25);
+  border-radius: 30px; display: inline-block;
+}
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(3.5rem, 10vw, 8.5rem);
+  font-weight: 900; line-height: 0.9; letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 .accent { color: var(--lime); display: block; }
+.hero p {
+  color: var(--mid); font-size: clamp(0.9rem, 2vw, 1.1rem);
+  max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem;
+}
+.hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--lime); color: #000; border: none;
+  padding: 0.85rem 2.2rem; border-radius: 8px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: 3px;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: var(--lime-dim); transform: translateY(-3px); }
+.btn-ghost {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+  padding: 0.85rem 2.2rem; border-radius: 8px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.1rem; font-weight: 700; letter-spacing: 3px;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { border-color: var(--lime); color: var(--lime); }
+.hero-stats {
+  display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap; justify-content: center;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2.5rem; font-weight: 900; color: var(--lime); line-height: 1;
+}
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; color: var(--muted); letter-spacing: 2px; margin-top: 0.25rem;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--surface); overflow: hidden; padding: 1rem 0;
+}
+.marquee-track {
+  display: flex; gap: 3rem; white-space: nowrap;
+  animation: marquee 20s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1rem; font-weight: 700; letter-spacing: 3px;
+  color: var(--muted); text-transform: uppercase; flex-shrink: 0;
+}
+.marquee-dot { color: var(--lime); margin: 0 0.5rem; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── SECTION ── */
+.section { padding: 5rem clamp(1rem,4vw,3rem); max-width: 1400px; margin: 0 auto; }
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
+}
+.section-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 3px; color: var(--lime);
+  text-transform: uppercase; margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: 1px;
+}
+.section-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 2px; color: var(--muted);
+  padding-bottom: 0.25rem;
+}
+
+/* ── FILTERS ── */
+.filters {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+}
+.filter-pill {
+  background: var(--surface); border: 1px solid var(--border2);
+  color: var(--light); padding: 0.45rem 1.1rem;
+  border-radius: 30px; cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.filter-pill:hover { border-color: var(--lime); color: var(--lime); }
+.filter-pill.active {
+  background: var(--lime); color: #000; border-color: var(--lime); font-weight: 700;
+}
+
+/* ── PRODUCTS GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+.product-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s;
+  cursor: pointer; position: relative;
+}
+.product-card:hover { transform: translateY(-6px); border-color: var(--border2); }
+.card-img {
+  height: 210px; display: flex; align-items: center;
+  justify-content: center; font-size: 4.5rem; position: relative;
+  overflow: hidden;
+}
+.card-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(20,20,20,0.4));
+}
+.badge {
+  position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
+  background: var(--lime); color: #000; border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 1.5px;
+  padding: 0.2rem 0.6rem; text-transform: uppercase;
+}
+.badge.red { background: var(--red); color: #fff; }
+.badge.white { background: rgba(255,255,255,0.12); color: var(--mid); }
+.rating {
+  position: absolute; bottom: 0.75rem; right: 0.75rem; z-index: 2;
+  display: flex; align-items: center; gap: 0.3rem;
+  background: rgba(0,0,0,0.6); border-radius: 6px;
+  padding: 0.2rem 0.5rem; backdrop-filter: blur(6px);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: #f5c842;
+}
+.card-body { padding: 1.1rem 1.25rem 1.35rem; }
+.card-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem; color: var(--lime); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 0.3rem;
+}
+.card-name {
+  font-size: 1.05rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.3rem;
+}
+.card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; }
+.card-price {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.4rem; font-weight: 700; line-height: 1;
+}
+.card-price span { font-size: 0.8rem; color: var(--muted); font-weight: 400; text-decoration: line-through; margin-left: 0.4rem; font-family: 'Outfit', sans-serif; }
+.add-btn {
+  background: var(--lime); color: #000; border: none;
+  padding: 0.5rem 1.1rem; border-radius: 8px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.95rem; font-weight: 700; letter-spacing: 1.5px;
+  transition: all 0.2s;
+}
+.add-btn:hover { background: var(--lime-dim); transform: scale(1.05); }
+.add-btn.in-cart {
+  background: transparent; color: var(--lime);
+  border: 1px solid var(--lime);
+}
+.no-results {
+  grid-column: 1/-1; text-align: center; padding: 5rem 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--muted);
+}
+
+/* Card background variants */
+.b-g1 { background: radial-gradient(ellipse at top, #0f2010, #0d0d0d); }
+.b-g2 { background: radial-gradient(ellipse at top, #0c1825, #0d0d0d); }
+.b-g3 { background: radial-gradient(ellipse at top, #201005, #0d0d0d); }
+.b-g4 { background: radial-gradient(ellipse at top, #180c28, #0d0d0d); }
+.b-g5 { background: radial-gradient(ellipse at top, #200808, #0d0d0d); }
+.b-g6 { background: radial-gradient(ellipse at top, #05181a, #0d0d0d); }
+.b-g7 { background: radial-gradient(ellipse at top, #181500, #0d0d0d); }
+.b-g8 { background: radial-gradient(ellipse at top, #1a0812, #0d0d0d); }
+
+/* ── FEATURE STRIP ── */
+.features-strip {
+  background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  padding: 3rem clamp(1rem,4vw,3rem);
+}
+.features-grid {
+  max-width: 1400px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;
+}
+.feature { display: flex; gap: 1rem; align-items: flex-start; }
+.feature-icon {
+  font-size: 1.8rem; flex-shrink: 0;
+  width: 48px; height: 48px; background: rgba(198,241,53,0.08);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+}
+.feature-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+.feature-text { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+
+/* ── CART DRAWER ── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  z-index: 900; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+.drawer {
+  position: fixed; top: 0; right: 0; height: 100%;
+  width: min(430px, 100vw); background: var(--surface);
+  border-left: 1px solid var(--border2); z-index: 901;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.drawer.open { transform: translateX(0); }
+.drawer-head {
+  padding: 1.5rem; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.drawer-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; color: var(--lime);
+}
+.drawer-close {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid var(--border2); background: none;
+  color: var(--light); cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.drawer-close:hover { border-color: var(--red); color: var(--red); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 1rem; }
+.cart-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 100%; gap: 1rem; color: var(--muted);
+}
+.cart-empty .e-icon { font-size: 4rem; opacity: 0.3; }
+.cart-empty p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; letter-spacing: 2px; text-align: center; line-height: 2;
+}
+.cart-item {
+  display: flex; gap: 0.875rem; padding: 0.875rem;
+  border: 1px solid var(--border); border-radius: 10px;
+  margin-bottom: 0.625rem; align-items: center;
+  background: var(--card); transition: border-color 0.15s;
+}
+.cart-item:hover { border-color: var(--border2); }
+.ci-icon { font-size: 2rem; flex-shrink: 0; }
+.ci-info { flex: 1; min-width: 0; }
+.ci-name { font-size: 0.875rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ci-price { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--lime); margin-top: 0.15rem; }
+.qty-row { display: flex; align-items: center; gap: 0.5rem; }
+.qbtn {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border2); background: var(--bg);
+  color: var(--text); cursor: pointer; font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.qbtn:hover { border-color: var(--lime); color: var(--lime); }
+.qnum { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; min-width: 22px; text-align: center; }
+.ci-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 0.25rem; transition: color 0.15s; }
+.ci-remove:hover { color: var(--red); }
+.drawer-foot {
+  padding: 1.25rem; border-top: 1px solid var(--border);
+}
+.total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.1rem; }
+.total-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 2px; color: var(--muted); }
+.total-amt {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 800; color: var(--lime); letter-spacing: 1px;
+}
+.checkout-btn {
+  width: 100%; background: var(--lime); color: #000; border: none;
+  padding: 1rem; border-radius: 10px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.2rem; font-weight: 800; letter-spacing: 4px;
+  transition: all 0.2s;
+}
+.checkout-btn:hover { background: var(--lime-dim); transform: translateY(-2px); }
+.shipping-note {
+  text-align: center; margin-top: 0.75rem;
+  font-size: 0.75rem; color: var(--muted);
+}
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--card2); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.75rem 1.5rem;
+  border-radius: 10px; z-index: 999;
+  font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem;
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none; white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); flex-shrink: 0; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--surface); border-top: 1px solid var(--border);
+  padding: 3rem clamp(1rem,4vw,3rem);
+  text-align: center;
+}
+.footer-logo {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 900; letter-spacing: 3px; color: var(--lime); margin-bottom: 0.5rem;
+}
+.footer-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem; color: var(--muted); letter-spacing: 1.5px; line-height: 2;
+}
+.footer-meta strong { color: var(--mid); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .nav-center { display: none; }
+  .search-box input { width: 140px; }
+  .search-box input:focus { width: 160px; }
+  .hero-stats { gap: 1.5rem; }
+}
+@media (max-width: 480px) {
+  .search-box { display: none; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; }
+  .card-img { height: 150px; font-size: 3.5rem; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-tag  { animation: fadeUp 0.5s ease both; }
+.hero h1   { animation: fadeUp 0.55s 0.1s ease both; }
+.hero p    { animation: fadeUp 0.55s 0.2s ease both; }
+.hero-btns { animation: fadeUp 0.55s 0.3s ease both; }
+.hero-stats{ animation: fadeUp 0.55s 0.4s ease both; }
+
+.product-card {
+  animation: fadeUp 0.4s ease both;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">FUEL<span>FIT</span></a>
+  <div class="nav-center">
+    <a href="#products" class="nav-link">SHOP</a>
+    <a href="#features" class="nav-link">WHY US</a>
+    <a href="#" class="nav-link">ABOUT</a>
+  </div>
+  <div class="nav-right">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search…" oninput="doFilter()">
+    </div>
+    <button class="cart-btn" onclick="openCart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      CART
+      <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">FUELFIT</div>
+  <div class="hero-tag">// NEW SEASON DROPS LIVE</div>
+  <h1>BUILT TO<br><span class="accent">PERFORM.</span></h1>
+  <p>Premium supplements and gym gear engineered for athletes who take their training seriously. No compromises.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW →</button>
+    <button class="btn-ghost">VIEW LOOKBOOK</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">ATHLETES</div></div>
+    <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">RATING</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label">TESTED</div></div>
+    <div class="stat"><div class="stat-num">48H</div><div class="stat-label">DELIVERY</div></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- FEATURES -->
+<div class="features-strip" id="features">
+  <div class="features-grid">
+    <div class="feature">
+      <div class="feature-icon">🚀</div>
+      <div><div class="feature-title">Free Shipping ₹999+</div><div class="feature-text">Free express delivery on all orders above ₹999 across India.</div></div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🧪</div>
+      <div><div class="feature-title">Lab Tested Products</div><div class="feature-text">Every supplement is third-party tested for purity & potency.</div></div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">🔄</div>
+      <div><div class="feature-title">Easy Returns</div><div class="feature-text">Hassle-free 30-day return policy, no questions asked.</div></div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">💬</div>
+      <div><div class="feature-title">Expert Support</div><div class="feature-text">Chat with certified trainers and nutritionists anytime.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<section class="section" id="products">
+  <div class="section-header">
+    <div>
+      <div class="section-kicker">// ALL PRODUCTS</div>
+      <div class="section-title">SHOP THE DROP</div>
+    </div>
+    <div class="section-count" id="resultCount">12 PRODUCTS</div>
+  </div>
+  <div class="filters">
+    <button class="filter-pill active" onclick="setFilter('all',this)">ALL</button>
+    <button class="filter-pill" onclick="setFilter('Supplements',this)">SUPPLEMENTS</button>
+    <button class="filter-pill" onclick="setFilter('Accessories',this)">ACCESSORIES</button>
+    <button class="filter-pill" onclick="setFilter('Equipment',this)">EQUIPMENT</button>
+  </div>
+  <div class="grid" id="productsGrid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">FUELFIT</div>
+  <div class="footer-meta">
+    VELLORE INSTITUTE OF TECHNOLOGY — WEB PROGRAMMING PROJECT<br>
+    <strong>Sandeep Namdevrao More</strong> · Reg No: 24BCE2883 · BCSE204L (L47+L48 & L55+L56)
+  </div>
+</footer>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-title">YOUR CART</span>
+    <button class="drawer-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot">
+    <div class="total-row">
+      <span class="total-lbl">ORDER TOTAL</span>
+      <span class="total-amt" id="totalAmt">₹0</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">PLACE ORDER →</button>
+    <p class="shipping-note">🚚 Free shipping on orders above ₹999</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastMsg"></span></div>
+
+<script>
+const PRODUCTS = [
+  {id:1,name:"Whey Protein Gold",cat:"Supplements",price:2499,mrp:3199,emoji:"🥛",desc:"25g protein per scoop. Chocolate & vanilla. Mixes smooth.",badge:"BESTSELLER",badgeClass:"",bg:"b-g1",rating:"4.9"},
+  {id:2,name:"Creatine Monohydrate",cat:"Supplements",price:799,mrp:999,emoji:"⚗️",desc:"Pure micronized creatine for explosive strength gains.",badge:"NEW",badgeClass:"",bg:"b-g2",rating:"4.8"},
+  {id:3,name:"Mass Gainer 3kg",cat:"Supplements",price:1899,mrp:2499,emoji:"💪",desc:"High-calorie formula with 50g carbs & 25g protein.",badge:null,badgeClass:"",bg:"b-g3",rating:"4.7"},
+  {id:4,name:"BCAA Amino Rush",cat:"Supplements",price:1299,mrp:1599,emoji:"🔬",desc:"2:1:1 BCAA ratio for muscle recovery & endurance.",badge:null,badgeClass:"",bg:"b-g4",rating:"4.6"},
+  {id:5,name:"Pre-Workout Ignite",cat:"Supplements",price:1599,mrp:1999,emoji:"⚡",desc:"Beta-alanine + caffeine blend for explosive energy.",badge:"HOT",badgeClass:"red",bg:"b-g5",rating:"4.9"},
+  {id:6,name:"Multivitamin Pack",cat:"Supplements",price:549,mrp:699,emoji:"💊",desc:"27 essential vitamins & minerals for peak performance.",badge:null,badgeClass:"",bg:"b-g6",rating:"4.5"},
+  {id:7,name:"Pro Grip Gloves",cat:"Accessories",price:399,mrp:599,emoji:"🥊",desc:"Full-palm protection with adjustable wrist strap.",badge:null,badgeClass:"",bg:"b-g7",rating:"4.7"},
+  {id:8,name:"Shaker Bottle 700ml",cat:"Accessories",price:299,mrp:399,emoji:"🧴",desc:"Leak-proof BPA-free with tornado mixing ball.",badge:null,badgeClass:"",bg:"b-g1",rating:"4.8"},
+  {id:9,name:"Resistance Band Set",cat:"Accessories",price:699,mrp:999,emoji:"🎗️",desc:"5 resistance levels for full-body home workouts.",badge:"POPULAR",badgeClass:"white",bg:"b-g2",rating:"4.9"},
+  {id:10,name:"Duffel Gym Bag",cat:"Accessories",price:1199,mrp:1799,emoji:"👜",desc:"40L waterproof canvas with separate shoe compartment.",badge:null,badgeClass:"",bg:"b-g8",rating:"4.6"},
+  {id:11,name:"Adjustable Dumbbell",cat:"Equipment",price:3499,mrp:4999,emoji:"🏋️",desc:"2–24kg quick-adjust. Replaces 9 pairs of dumbbells.",badge:"PRO",badgeClass:"",bg:"b-g5",rating:"4.9"},
+  {id:12,name:"Speed Jump Rope",cat:"Equipment",price:449,mrp:599,emoji:"🏃",desc:"Adjustable steel cable with ball-bearing handles.",badge:null,badgeClass:"",bg:"b-g3",rating:"4.7"},
+];
+
+let cart = JSON.parse(localStorage.getItem('ff_cart') || '[]');
+let activeFilter = 'all';
+let searchQ = '';
+
+/* ── MARQUEE ── */
+(function(){
+  const items = ['WHEY PROTEIN','CREATINE','BCAA','PRE-WORKOUT','GYM GLOVES','RESISTANCE BANDS','DUMBBELLS','SHAKERS','MASS GAINER','GYM BAG'];
+  const double = [...items,...items];
+  document.getElementById('marqueeTrack').innerHTML = double.map(t=>`<span class="marquee-item">${t}<span class="marquee-dot">◆</span></span>`).join('');
+})();
+
+/* ── RENDER PRODUCTS ── */
+function renderProducts(){
+  const grid = document.getElementById('productsGrid');
+  let list = PRODUCTS;
+  if(activeFilter !== 'all') list = list.filter(p=>p.cat===activeFilter);
+  if(searchQ) list = list.filter(p=>p.name.toLowerCase().includes(searchQ)||p.cat.toLowerCase().includes(searchQ));
+
+  document.getElementById('resultCount').textContent = `${list.length} PRODUCT${list.length!==1?'S':''}`;
+
+  if(!list.length){
+    grid.innerHTML = '<div class="no-results">// NO PRODUCTS FOUND. TRY A DIFFERENT SEARCH.</div>';
+    return;
+  }
+
+  grid.innerHTML = list.map((p,i)=>{
+    const ci = cart.find(c=>c.id===p.id);
+    const save = Math.round((1-p.price/p.mrp)*100);
+    return `
+    <div class="product-card" style="animation-delay:${i*0.04}s">
+      <div class="card-img ${p.bg}">
+        ${p.badge?`<div class="badge ${p.badgeClass}">${p.badge}</div>`:''}
+        <div class="rating">★ ${p.rating}</div>
+        ${p.emoji}
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${p.cat} · SAVE ${save}%</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-footer">
+          <div class="card-price">₹${p.price.toLocaleString()}<span>₹${p.mrp.toLocaleString()}</span></div>
+          <button class="add-btn ${ci?'in-cart':''}" onclick="addToCart(${p.id})">
+            ${ci?'✓ ADDED':'+ ADD'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── RENDER CART ── */
+function renderCart(){
+  const body = document.getElementById('drawerBody');
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const totalItems = cart.reduce((s,i)=>s+i.qty,0);
+
+  document.getElementById('cartCount').textContent = totalItems;
+  document.getElementById('totalAmt').textContent = `₹${total.toLocaleString()}`;
+
+  if(!cart.length){
+    body.innerHTML = `<div class="cart-empty"><div class="e-icon">🛒</div><p>YOUR CART IS EMPTY<br>START SHOPPING ABOVE</p></div>`;
+    return;
+  }
+
+  body.innerHTML = cart.map(item=>`
+    <div class="cart-item">
+      <div class="ci-icon">${item.emoji}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-price">₹${(item.price*item.qty).toLocaleString()}</div>
+      </div>
+      <div class="qty-row">
+        <button class="qbtn" onclick="changeQty(${item.id},-1)">−</button>
+        <span class="qnum">${item.qty}</span>
+        <button class="qbtn" onclick="changeQty(${item.id},1)">+</button>
+      </div>
+      <button class="ci-remove" onclick="removeItem(${item.id})" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+/* ── CART ACTIONS ── */
+function saveCart(){ localStorage.setItem('ff_cart', JSON.stringify(cart)); }
+
+function addToCart(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  const ex = cart.find(c=>c.id===id);
+  if(ex) ex.qty++; else cart.push({id,name:p.name,price:p.price,emoji:p.emoji,qty:1});
+  saveCart(); renderCart(); renderProducts();
+  toast(`${p.name} added to cart`);
+}
+
+function changeQty(id, d){
+  const item = cart.find(c=>c.id===id);
+  if(!item) return;
+  item.qty += d;
+  if(item.qty <= 0) cart = cart.filter(c=>c.id!==id);
+  saveCart(); renderCart(); renderProducts();
+}
+
+function removeItem(id){
+  cart = cart.filter(c=>c.id!==id);
+  saveCart(); renderCart(); renderProducts();
+}
+
+/* ── DRAWER ── */
+function openCart(){
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCart(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── FILTER / SEARCH ── */
+function setFilter(f, btn){
+  activeFilter = f;
+  document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+function doFilter(){
+  searchQ = document.getElementById('searchInput').value.toLowerCase();
+  renderProducts();
+}
+
+/* ── TOAST ── */
+function toast(msg){
+  const el = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+/* ── CHECKOUT ── */
+function checkout(){
+  if(!cart.length){ toast('Your cart is empty!'); return; }
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  const items = cart.map(i=>`• ${i.name} x${i.qty}`).join('\n');
+  alert(`✅ Order Confirmed!\n\n${items}\n\nTotal: ₹${total.toLocaleString()}\n\nThank you for shopping at FuelFit! 💪`);
+  cart=[]; saveCart(); renderCart(); renderProducts(); closeCart();
+}
+
+// Init
+renderProducts(); renderCart();
+</script>
+</body>
+</html>

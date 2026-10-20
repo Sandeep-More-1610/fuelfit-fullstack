@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>FuelFit — Premium Performance Gear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="2nd.css"/>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <button class="logo" id="logoBtn"><span class="logo__icon">⚡</span><span class="logo__text">FUELFIT</span></button>
+    <nav class="nav" id="mainNav">
+      <button class="nav__link" data-page="home">Home</button>
+      <button class="nav__link" data-page="shop">Shop All</button>
+      <button class="nav__link" data-page="apparel">Apparel</button>
+      <button class="nav__link" data-page="supplements">Supplements</button>
+      <button class="nav__link" data-page="accessories">Accessories</button>
+    </nav>
+    <div class="header__actions">
+      <button class="icon-btn" id="searchBtn" aria-label="Search">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <button class="cart-btn icon-btn" id="cartBtn" aria-label="Cart">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+      <button class="login-btn" id="loginBtn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span id="loginBtnText">Login</span>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <button class="nav__link" data-page="home">Home</button>
+    <button class="nav__link" data-page="shop">Shop All</button>
+    <button class="nav__link" data-page="apparel">Apparel</button>
+    <button class="nav__link" data-page="supplements">Supplements</button>
+    <button class="nav__link" data-page="accessories">Accessories</button>
+    <button class="login-btn mobile-login-btn" id="mobileLoginBtn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="mobileLoginBtnText">Login / Sign Up</span>
+    </button>
+  </nav>
+</header>
+
+<!-- LOGIN MODAL -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <button class="modal__close" id="modalClose">✕</button>
+    <div class="modal__logo"><span class="logo__icon">⚡</span><span class="logo__text" style="font-size:1.5rem;letter-spacing:2px;color:#09090b">FUELFIT</span></div>
+    <h2 class="modal__title" id="modalTitle">Welcome Back</h2>
+    <p class="modal__sub" id="modalSub">Sign in to your account to continue</p>
+    <div class="modal__tabs">
+      <button class="modal__tab active" id="tabLogin">Login</button>
+      <button class="modal__tab" id="tabSignup">Sign Up</button>
+    </div>
+    <div id="loginFormWrap">
+      <div class="modal-form">
+        <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@example.com"/><span class="form-error" id="loginEmailErr">Please enter a valid email</span></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter your password"/><span class="form-error" id="loginPassErr">Password must be at least 6 characters</span></div>
+        <button class="btn btn--primary w-full" id="loginSubmitBtn">Sign In →</button>
+        <p class="modal-switch-text">Don't have an account? <button class="modal-switch-link" id="switchToSignup">Sign up</button></p>
+      </div>
+    </div>
+    <div id="signupFormWrap" class="hidden">
+      <div class="modal-form">
+        <div class="form-group"><label>Full Name</label><input type="text" id="signupName" placeholder="Rahul Sharma"/><span class="form-error" id="signupNameErr">Please enter your name</span></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="signupEmail" placeholder="you@example.com"/><span class="form-error" id="signupEmailErr">Please enter a valid email</span></div>
+        <div class="form-group"><label>Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters"/><span class="form-error" id="signupPassErr">Password must be at least 6 characters</span></div>
+        <button class="btn btn--primary w-full" id="signupSubmitBtn">Create Account →</button>
+        <p class="modal-switch-text">Already have an account? <button class="modal-switch-link" id="switchToLogin">Sign in</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <button class="search-overlay__close" id="searchClose">✕</button>
+  <p class="search-label">Search Products</p>
+  <input class="search-input" id="searchInput" type="text" placeholder="Type to search..." autocomplete="off"/>
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<main id="mainContent">
+
+  <!-- HOME PAGE -->
+  <section class="page" id="homePage">
+    <div class="hero">
+      <img class="hero__bg" src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=1920" alt=""/>
+      <div class="hero__overlay"></div>
+      <div class="hero__streak"></div>
+      <div class="hero__content">
+        <div class="hero__eyebrow">Elite Performance Gear</div>
+        <h1 class="hero__title">UNLEASH<br/><span class="hero__title--accent">YOUR POTENTIAL</span></h1>
+        <p class="hero__subtitle">Premium apparel and nutrition for athletes who refuse to settle</p>
+        <div class="hero__btns">
+          <button class="btn btn--primary" data-page="shop">Shop Now →</button>
+          <button class="btn btn--ghost" data-page="supplements">View Supplements</button>
+        </div>
+      </div>
+      <div class="hero__stats">
+        <div class="stat"><span class="stat__num">50K+</span><span class="stat__label">Athletes</span></div>
+        <div class="stat"><span class="stat__num">200+</span><span class="stat__label">Products</span></div>
+        <div class="stat"><span class="stat__num">4.9★</span><span class="stat__label">Rating</span></div>
+        <div class="stat"><span class="stat__num">98%</span><span class="stat__label">Satisfaction</span></div>
+      </div>
+    </div>
+
+    <section class="features">
+      <div class="container">
+        <div class="features__grid">
+          <div class="feature-card"><span class="feature-card__icon">⚡</span><h3>Performance First</h3><p>Engineered with cutting-edge fabrics and nutrition science for peak athletic output.</p></div>
+          <div class="feature-card"><span class="feature-card__icon">🛡️</span><h3>Quality Guaranteed</h3><p>Premium materials and rigorous testing ensure durability and real results.</p></div>
+          <div class="feature-card"><span class="feature-card__icon">📈</span><h3>Proven Results</h3><p>Trusted by 50,000+ athletes worldwide to fuel their fitness journey.</p></div>
+          <div class="feature-card"><span class="feature-card__icon">🚀</span><h3>Fast Shipping</h3><p>Free express shipping on orders over ₹6,500. Delivered within 2–3 business days.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="featured-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Top Picks</span>
+          <h2 class="section-title">Featured Products</h2>
+          <p class="section-sub">Our most popular gear and supplements</p>
+        </div>
+        <div class="products-grid" id="featuredGrid"></div>
+        <div class="text-center" style="margin-top:3rem">
+          <button class="btn btn--dark" data-page="shop">View All Products →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Collections</span>
+          <h2 class="section-title">Shop by Category</h2>
+          <p class="section-sub">Find exactly what you need to level up</p>
+        </div>
+        <div class="cat-grid">
+          <div class="cat-card" data-page="apparel"><img src="https://images.pexels.com/photos/3756042/pexels-photo-3756042.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Apparel"/><div class="cat-card__body"><span>Apparel</span><small>Tees, shorts, leggings & more</small><div class="cat-card__arrow">→</div></div></div>
+          <div class="cat-card" data-page="supplements"><img src="https://images.pexels.com/photos/3850838/pexels-photo-3850838.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Supplements"/><div class="cat-card__body"><span>Supplements</span><small>Protein, pre-workout & more</small><div class="cat-card__arrow">→</div></div></div>
+          <div class="cat-card" data-page="accessories"><img src="https://images.pexels.com/photos/4164512/pexels-photo-4164512.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Accessories"/><div class="cat-card__body"><span>Accessories</span><small>Belts, bands, rollers & more</small><div class="cat-card__arrow">→</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="newsletter__bg"><img src="https://images.pexels.com/photos/2294361/pexels-photo-2294361.jpeg?auto=compress&cs=tinysrgb&w=1920" alt=""/></div>
+      <div class="newsletter__overlay"></div>
+      <div class="newsletter__content">
+        <h2>Join The FuelFit Movement</h2>
+        <p>Exclusive drops, athlete stories, and training tips — straight to your inbox</p>
+        <form class="newsletter__form" id="newsletterForm">
+          <input type="email" placeholder="Enter your email address" required/>
+          <button type="submit" class="btn btn--dark">Subscribe</button>
+        </form>
+        <p class="newsletter__note" id="newsletterMsg"></p>
+      </div>
+    </section>
+  </section>
+
+  <!-- SHOP PAGE -->
+  <section class="page hidden" id="shopPage">
+    <div class="shop-hero">
+      <div class="container">
+        <h1 id="shopTitle">All Products</h1>
+        <p id="shopSubtitle">Browse our complete collection of premium gear and supplements</p>
+      </div>
+    </div>
+    <div class="container shop-body">
+      <div class="shop-filters">
+        <div class="filter-chips" id="filterChips">
+          <button class="chip active" data-cat="all">All</button>
+          <button class="chip" data-cat="apparel">Apparel</button>
+          <button class="chip" data-cat="supplements">Supplements</button>
+          <button class="chip" data-cat="accessories">Accessories</button>
+        </div>
+        <div class="sort-bar">
+          <label>Sort by</label>
+          <select id="sortSelect">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low → High</option>
+            <option value="price-high">Price: High → Low</option>
+            <option value="name">Name: A → Z</option>
+          </select>
+        </div>
+      </div>
+      <p class="product-count" id="productCount"></p>
+      <div class="products-grid" id="shopGrid"></div>
+      <p class="empty-msg hidden" id="emptyMsg">No products found in this category.</p>
+    </div>
+  </section>
+
+  <!-- PRODUCT DETAIL PAGE -->
+  <section class="page hidden" id="productPage">
+    <div class="container">
+      <button class="back-btn" id="backBtn">← Back</button>
+      <div class="product-detail" id="productDetail"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- CART SIDEBAR -->
+<div class="cart-backdrop" id="cartBackdrop"></div>
+<aside class="cart-sidebar" id="cartSidebar">
+  <div class="cart-sidebar__head">
+    <div style="display:flex;align-items:center;gap:.75rem"><h2>Your Cart</h2><span class="cart-count-chip" id="cartCountChip">0</span></div>
+    <button class="icon-btn cart-close-icon" id="cartClose">✕</button>
+  </div>
+  <div class="cart-sidebar__body" id="cartBody"></div>
+  <div class="cart-sidebar__foot" id="cartFoot" style="display:none">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotalVal">₹0</span></div>
+    <div class="cart-shipping"><span>Shipping</span><span id="cartShippingVal">FREE</span></div>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn btn--primary w-full checkout-btn" id="checkoutBtn">Proceed to Checkout →</button>
+  </div>
+</aside>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <div class="logo"><span class="logo__icon">⚡</span><span class="logo__text">FUELFIT</span></div>
+        <p>Premium performance gear and nutrition for athletes who refuse to settle.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="Twitter">t</a>
+          <a href="#" aria-label="YouTube">▶</a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Shop</h4>
+        <button data-page="shop">All Products</button>
+        <button data-page="apparel">Apparel</button>
+        <button data-page="supplements">Supplements</button>
+        <button data-page="accessories">Accessories</button>
+      </div>
+      <div class="footer__col">
+        <h4>Support</h4>
+        <button>Contact Us</button><button>Shipping Info</button><button>Returns</button><button>Size Guide</button><button>FAQ</button>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <button>About Us</button><button>Athletes</button><button>Careers</button><button>Sustainability</button>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 FuelFit. All rights reserved.</p>
+      <div><button>Privacy Policy</button><button>Terms of Service</button><button>Cookie Policy</button></div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="3rd.js"></script>
+</body>
+</html>
