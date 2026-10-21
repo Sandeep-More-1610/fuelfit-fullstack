@@ -19,7 +19,7 @@ Repository: https://github.com/Sandeep-More-1610/fuelfit-fullstack
 ## Run on Windows
 
 1. Read [backend/README.md](backend/README.md), select Java 21 and supply database credentials in your local PowerShell session.
-2. Build with `backend\mvnw.cmd verify` from the backend directory and start the `mysql` profile using the documented script.
+2. From the backend directory, build with `.\mvnw.cmd verify` and start the `mysql` profile using the documented script.
 3. From the repository root run `npm run dev` (Node.js 22+). No frontend packages are needed to serve the site.
 4. Open http://127.0.0.1:8859/ and register an account.
 5. Promote your own registered operator account using the offline admin script. Enter real inventory through Manage catalog before testing purchases. Seeded products start with zero stock.
