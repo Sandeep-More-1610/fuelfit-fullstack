@@ -1,0 +1,283 @@
+[
+  {
+    "id": "a1",
+    "name": "Pro Performance Tee",
+    "category": "apparel",
+    "featured": true,
+    "price": 2999,
+    "description": "Moisture-wicking, four-way stretch fabric keeps you dry and comfortable through the toughest workouts. Anti-odor technology built in.",
+    "image": "https://images.pexels.com/photos/3764011/pexels-photo-3764011.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      "Black",
+      "White",
+      "Gray",
+      "Orange"
+    ]
+  },
+  {
+    "id": "a2",
+    "name": "Flex Training Shorts",
+    "category": "apparel",
+    "featured": true,
+    "price": 3799,
+    "description": "Ultra-light 4-inch inseam shorts with hidden zip pocket and built-in liner. Perfect for HIIT, running, and cross-training.",
+    "image": "https://images.pexels.com/photos/1321943/pexels-photo-1321943.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      "Black",
+      "Navy",
+      "Gray"
+    ]
+  },
+  {
+    "id": "a3",
+    "name": "Compression Leggings",
+    "category": "apparel",
+    "featured": false,
+    "price": 5299,
+    "description": "High-waist compression leggings with sculpting panels and moisture management. 7/8 length for versatile styling.",
+    "image": "https://images.pexels.com/photos/2827400/pexels-photo-2827400.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "Black",
+      "Charcoal",
+      "Midnight Blue"
+    ]
+  },
+  {
+    "id": "a4",
+    "name": "Heavyweight Hoodie",
+    "category": "apparel",
+    "featured": false,
+    "price": 6499,
+    "description": "Premium 400gsm French terry cotton hoodie. Pre-washed for a soft, broken-in feel. Kangaroo pocket and adjustable drawcord.",
+    "image": "https://images.pexels.com/photos/6311392/pexels-photo-6311392.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      "Black",
+      "Cream",
+      "Forest Green"
+    ]
+  },
+  {
+    "id": "a5",
+    "name": "Sports Bra Pro",
+    "category": "apparel",
+    "featured": true,
+    "price": 3499,
+    "description": "Medium-impact support bra with moisture-wicking fabric and removable pads. Racerback design for full range of motion.",
+    "image": "https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      "Black",
+      "Coral",
+      "Teal"
+    ]
+  },
+  {
+    "id": "s1",
+    "name": "Whey Protein Isolate",
+    "category": "supplements",
+    "featured": true,
+    "price": 4499,
+    "description": "Ultra-pure 90% protein isolate. 25g protein per scoop, less than 1g carbs and fat. Cold-processed to preserve bioactive peptides.",
+    "image": "https://images.pexels.com/photos/3850838/pexels-photo-3850838.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "1kg",
+      "2.5kg",
+      "5kg"
+    ],
+    "colors": [
+      "Chocolate",
+      "Vanilla",
+      "Strawberry",
+      "Unflavored"
+    ]
+  },
+  {
+    "id": "s2",
+    "name": "Pre-Workout Ignite",
+    "category": "supplements",
+    "featured": true,
+    "price": 3299,
+    "description": "Explosive energy and focus. 300mg caffeine, 6g citrulline, 3.2g beta-alanine. Third-party tested. 30 full servings.",
+    "image": "https://images.pexels.com/photos/4164766/pexels-photo-4164766.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "30 Servings",
+      "60 Servings"
+    ],
+    "colors": [
+      "Blue Razz",
+      "Watermelon",
+      "Mango Peach"
+    ]
+  },
+  {
+    "id": "s3",
+    "name": "Creatine Monohydrate",
+    "category": "supplements",
+    "featured": false,
+    "price": 1999,
+    "description": "Pharmaceutical-grade micronized creatine monohydrate. 5g per scoop. Unflavored â€” mixes instantly into any liquid. 60 servings.",
+    "image": "https://images.pexels.com/photos/3076516/pexels-photo-3076516.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "300g",
+      "500g",
+      "1kg"
+    ],
+    "colors": [
+      "Unflavored"
+    ]
+  },
+  {
+    "id": "s4",
+    "name": "BCAA Recovery Blend",
+    "category": "supplements",
+    "featured": false,
+    "price": 2699,
+    "description": "2:1:1 ratio BCAA with electrolytes and coconut water powder. Reduces muscle soreness and speeds recovery. 40 servings.",
+    "image": "https://images.pexels.com/photos/3766208/pexels-photo-3766208.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "40 Servings"
+    ],
+    "colors": [
+      "Tropical Punch",
+      "Lemon Lime",
+      "Grape"
+    ]
+  },
+  {
+    "id": "s5",
+    "name": "Mass Gainer Pro",
+    "category": "supplements",
+    "featured": true,
+    "price": 5499,
+    "description": "1250 calories, 50g protein, 252g carbs per serving. Complex carb blend from oats and sweet potato. Ideal for hard gainers.",
+    "image": "https://images.pexels.com/photos/4397839/pexels-photo-4397839.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "2.5kg",
+      "5kg"
+    ],
+    "colors": [
+      "Chocolate Peanut Butter",
+      "Vanilla Ice Cream"
+    ]
+  },
+  {
+    "id": "ac1",
+    "name": "Neoprene Weightlifting Belt",
+    "category": "accessories",
+    "featured": true,
+    "price": 3999,
+    "description": "Professional-grade 4\" neoprene belt with velcro fastening. Provides lumbar support for heavy compound lifts.",
+    "image": "https://images.pexels.com/photos/4164512/pexels-photo-4164512.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "S/M",
+      "L/XL",
+      "XXL"
+    ],
+    "colors": [
+      "Black",
+      "Red"
+    ]
+  },
+  {
+    "id": "ac2",
+    "name": "Shaker Bottle Pro",
+    "category": "accessories",
+    "featured": false,
+    "price": 1299,
+    "description": "800ml BPA-free Tritan shaker with stainless steel BlenderBall wire whisk. Leak-proof lid, stackable base for protein storage.",
+    "image": "https://images.pexels.com/photos/6551133/pexels-photo-6551133.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "800ml"
+    ],
+    "colors": [
+      "Black",
+      "White",
+      "Orange",
+      "Gray"
+    ]
+  },
+  {
+    "id": "ac3",
+    "name": "Resistance Band Set",
+    "category": "accessories",
+    "featured": false,
+    "price": 2299,
+    "description": "Set of 5 natural latex resistance bands (5â€“25kg). Includes mesh carry bag, door anchor, handles, and ankle straps.",
+    "image": "https://images.pexels.com/photos/4162438/pexels-photo-4162438.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "Set of 5"
+    ],
+    "colors": [
+      "Multi-Color"
+    ]
+  },
+  {
+    "id": "ac4",
+    "name": "Lifting Straps Pro",
+    "category": "accessories",
+    "featured": false,
+    "price": 1699,
+    "description": "Heavy-duty cotton lifting straps with neoprene wrist padding. Maximum grip for deadlifts, rows, and lat pulldowns.",
+    "image": "https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "One Size"
+    ],
+    "colors": [
+      "Black",
+      "Gray"
+    ]
+  },
+  {
+    "id": "ac5",
+    "name": "Foam Roller Elite",
+    "category": "accessories",
+    "featured": true,
+    "price": 2999,
+    "description": "High-density EVA foam roller with 3D grid surface for deep tissue massage and myofascial release. 45cm length.",
+    "image": "https://images.pexels.com/photos/4162455/pexels-photo-4162455.jpeg?auto=compress&cs=tinysrgb&w=600",
+    "sizes": [
+      "45cm",
+      "90cm"
+    ],
+    "colors": [
+      "Black",
+      "Blue",
+      "Orange"
+    ]
+  }
+]
