@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler({org.springframework.dao.DuplicateKeyException.class,
+            org.springframework.dao.ConcurrencyFailureException.class})
+    ResponseEntity<ApiError> conflict() {
+        return ResponseEntity.status(409).body(new ApiError("CONFLICT", "The resource changed or already exists. Reload and try again."));
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiError> validation(MethodArgumentNotValidException ex) {
         var fields = new LinkedHashMap<String, String>();
@@ -46,7 +51,7 @@ public class ApiExceptionHandler {
     }
     @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
     ResponseEntity<ApiError> status(org.springframework.web.server.ResponseStatusException ex) {
-        return ResponseEntity.status(ex.getStatusCode()).body(new ApiError("CATALOG_ERROR", ex.getReason()));
+        return ResponseEntity.status(ex.getStatusCode()).body(new ApiError("REQUEST_ERROR", ex.getReason()));
     }
     @ExceptionHandler({org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
             org.springframework.web.bind.MissingServletRequestParameterException.class})

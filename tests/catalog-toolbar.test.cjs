@@ -3,7 +3,7 @@ const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 let browser;
-before(async () => { browser = await chromium.launch({channel:'msedge'}); });
+before(async () => { browser = await chromium.launch(require('./browser-options.cjs')); });
 after(async () => { await browser?.close(); });
 async function open(width) {
   const context = await browser.newContext({viewport:{width,height:1000}});

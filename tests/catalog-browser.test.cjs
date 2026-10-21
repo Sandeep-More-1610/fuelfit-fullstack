@@ -22,13 +22,13 @@ before(async()=>{
  assert.equal(process.env.DB_PORT,'33307');
  assert.equal(new URL(api).hostname,'127.0.0.1');
  assert.equal(new URL(api).port,'18080');
- browser=await chromium.launch({channel:process.env.BROWSER_CHANNEL||'msedge',headless:true});
+ browser=await chromium.launch(require('./browser-options.cjs'));
  admin=await request.newContext();customer=await request.newContext();
  for(const [client,email] of [[admin,operatorEmail],[customer,customerEmail]]){
   const response=await mutate(client,'POST','/api/auth/register',{name:'Phase Two Tester',email,password});
   assert.equal(response.status(),201,await response.text());
  }
- const jar=path.resolve(__dirname,'../backend/target/fuelfit-backend-phase2.jar');
+ const jar=path.resolve(__dirname,'../backend/target/fuelfit-backend.jar');
  const provision=spawnSync(path.join(process.env.JAVA_HOME,'bin','java.exe'),['-jar',jar,'--spring.profiles.active=mysql,admin-provision'],{
   env:{...process.env,ADMIN_EMAIL:operatorEmail},encoding:'utf8',timeout:60000
  });

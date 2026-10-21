@@ -14,6 +14,11 @@ SELECT COUNT(*) AS users FROM users;
 SELECT COUNT(*) AS categories FROM categories;
 SELECT COUNT(*) AS products, SUM(active) AS published_products FROM products;
 SELECT COUNT(*) AS inventory_rows, SUM(quantity) AS total_stock FROM inventory;
+SELECT COUNT(*) AS cart_items FROM cart_items;
+SELECT COUNT(*) AS orders FROM orders;
+SELECT COUNT(*) AS saved_addresses FROM addresses;
+SELECT COUNT(*) AS wishlist_items FROM wishlist_items;
+SELECT COUNT(*) AS newsletter_subscribers FROM newsletter_subscribers;
 '@ | & $MySqlExecutable --no-defaults "--host=$dbHost" "--port=$dbPort" "--user=$env:DB_USERNAME" --batch $dbName
     if ($LASTEXITCODE -ne 0) { throw 'Read-only database verification failed.' }
 } finally {

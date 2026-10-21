@@ -3,7 +3,7 @@ const {test, before, after} = require('node:test');
 const assert = require('node:assert/strict');
 const {chromium} = require('playwright');
 let browser;
-before(async () => { browser = await chromium.launch({channel:'msedge', headless:true}); });
+before(async () => { browser = await chromium.launch(require('./browser-options.cjs')); });
 after(async () => { await browser?.close(); });
 async function open() {
   const context = await browser.newContext();
@@ -69,18 +69,37 @@ test('cart refresh failure is visible and retry recovers', async () => {
     assert.equal(await page.locator('#checkoutBtn').isDisabled(), false);
   } finally { await context.close(); }
 });
-test('checkout and newsletter do not claim unimplemented server actions', async () => {
+test('checkout and newsletter failures never claim an order or subscription succeeded', async () => {
   const {context,page} = await open();
   try {
-    await page.evaluate(() => { user={name:'Test Athlete',role:'CUSTOMER'}; addToCart('a1','M','Black',1); });
+    await context.route('**/api/cart',route=>route.fulfill({status:503,json:{message:'Cart temporarily unavailable'}}));
+    await context.route('**/api/newsletter/subscriptions',route=>route.fulfill({status:503,json:{message:'Subscription temporarily unavailable'}}));
+    await context.route('**/api/auth/csrf',route=>route.fulfill({json:{token:'test',headerName:'X-CSRF-TOKEN'}}));
+    await page.evaluate(() => addToCart('a1','M','Black',1));
     await page.waitForFunction(() => !document.querySelector('#checkoutBtn').disabled);
-    await page.locator('#checkoutBtn').click();
-    assert.match(await page.locator('#toast').textContent(), /not available yet/i);
+    await page.evaluate(async () => { user={email:'test@example.test',name:'Test Athlete',role:'CUSTOMER'}; await openCheckout(); });
+    assert.match(await page.locator('#toast').textContent(), /Cart temporarily unavailable/i);
+    assert.equal(await page.locator('#checkoutDialog').isVisible(),false);
     await page.locator('#cartClose').click();
-    await page.locator('#newsletterForm input').fill('test@example.test');
+    await page.locator('#newsletterForm input[type=email]').fill('test@example.test');
+    await page.locator('[name=consent]').check();
     await page.locator('#newsletterForm button').click();
-    assert.match(await page.locator('#newsletterMsg').textContent(), /not available yet/i);
+    await page.waitForFunction(()=>document.getElementById('newsletterMsg').textContent.includes('temporarily unavailable'));
   } finally { await context.close(); }
+});
+
+test('guest cart respects the same 99-per-option limit as the server', async () => {
+  const {context,page,products}=await open();
+  try {
+    products.find(p=>p.id==='a1').stock=200;
+    await page.evaluate(async()=>{
+      await showProduct('a1');
+      addToCart('a1','M','Black',100);
+    });
+    assert.equal(await page.evaluate(()=>cart.length),0);
+    await page.evaluate(()=>{addToCart('a1','M','Black',99);addToCart('a1','M','Black',1);});
+    assert.equal(await page.evaluate(()=>cart[0].qty),99);
+  } finally {await context.close();}
 });
 test('closed overlays are not keyboard-focusable and search restores focus', async () => {
   const {context,page} = await open();

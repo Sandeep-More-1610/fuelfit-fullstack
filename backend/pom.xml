@@ -89,7 +89,7 @@
 	</dependencies>
 
 	<build>
-        <finalName>fuelfit-backend-phase2</finalName>
+        <finalName>fuelfit-backend</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -1,0 +1,14 @@
+{
+  "name": "fuelfit-fullstack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FuelFit storefront and Java Spring Boot e-commerce backend",
+  "scripts": {
+    "dev": "node scripts/serve.cjs",
+    "test": "node --test tests/auth-frontend.test.cjs",
+    "test:browser": "node tests/run-browser-tests.cjs",
+    "test:commerce": "node --test tests/commerce-e2e.test.cjs"
+  },
+  "devDependencies": { "playwright": "1.62.1" },
+  "engines": { "node": ">=22" }
+}

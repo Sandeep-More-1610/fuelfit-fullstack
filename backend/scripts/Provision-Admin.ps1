@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 if (-not $env:DB_USERNAME -or -not $env:DB_PASSWORD) { throw 'Set DB_USERNAME and DB_PASSWORD in this PowerShell session first.' }
 if (-not $env:JAVA_HOME) { throw 'Set JAVA_HOME to your Java 21 installation first.' }
 $java = Join-Path $env:JAVA_HOME 'bin\java.exe'
-$jar = Join-Path $PSScriptRoot '..\target\fuelfit-backend-phase2.jar'
+$jar = Join-Path $PSScriptRoot '..\target\fuelfit-backend.jar'
 if (-not (Test-Path -LiteralPath $jar)) { throw 'Build the backend with mvnw.cmd verify first.' }
 $previousAdminEmail = $env:ADMIN_EMAIL
 try {

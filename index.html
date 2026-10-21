@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;0,900;1,300&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="2nd.css?v=20261021-review"/>
+  <link rel="stylesheet" href="2nd.css?v=20261021-fullstack"/>
 </head>
 <body>
 
@@ -22,6 +22,7 @@
       <button class="nav__link" data-page="accessories">Accessories</button>
     </nav>
     <div class="header__actions">
+      <button class="login-btn hidden" id="accountBtn" aria-label="My account">My account</button>
       <button class="icon-btn" id="searchBtn" aria-label="Search">
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
@@ -163,6 +164,7 @@
           <input type="email" placeholder="Enter your email address" required/>
           <button type="submit" class="btn btn--dark">Subscribe</button>
         </form>
+        <label class="newsletter-consent"><input type="checkbox" name="consent" form="newsletterForm" required/> I agree to save my email for FuelFit updates. Email delivery is not configured yet.</label>
         <p class="newsletter__note" id="newsletterMsg"></p>
       </div>
     </section>
@@ -237,8 +239,45 @@
  </form>
  <div id="adminProducts" class="admin-products"></div>
  <div class="catalog-pagination"><button id="adminPrev" class="btn btn--dark">Previous</button><span id="adminPageLabel"></span><button id="adminNext" class="btn btn--dark">Next</button></div>
+ <h2>Categories</h2>
+ <form id="categoryForm" class="admin-form">
+  <label>Action<select name="mode"><option value="create">Create category</option><option value="update">Update category</option></select></label>
+  <label>Category ID<input name="id" pattern="[a-z0-9-]{1,40}" maxlength="40" required placeholder="training-gear"/></label>
+  <label>Name<input name="name" maxlength="100" required/></label>
+  <label>Description<input name="description" maxlength="500" required/></label>
+  <button class="btn btn--primary">Save category</button>
+ </form>
+ <h2>Orders</h2><button id="adminOrdersLoad" class="btn btn--primary">Load orders</button><div id="adminOrderContent" aria-live="polite"></div>
+</div></section>
+<section id="accountPage" class="page hidden"><div class="container account-body">
+ <h1>My account</h1>
+ <nav class="account-tabs" aria-label="Account sections"><button data-account="orders">My orders</button><button data-account="wishlist">Wishlist</button><button data-account="addresses">Saved addresses</button></nav>
+ <div id="accountContent" aria-live="polite"></div>
+ <div class="account-tabs"><button id="retryGuestCart">Import saved guest cart</button><button id="unsubscribeNewsletter">Stop newsletter subscription</button></div>
 </div></section>
 </main>
+
+<dialog id="checkoutDialog" class="checkout-dialog" aria-labelledby="checkoutTitle">
+ <button id="checkoutClose" class="modal__close" aria-label="Close checkout">✕</button>
+ <h2 id="checkoutTitle">Checkout</h2><p>Delivery within India · Cash on delivery only</p>
+ <form id="checkoutForm" class="checkout-form">
+ <fieldset id="checkoutFields">
+  <label>Saved address<select id="savedAddress"><option value="">Enter a new address</option></select></label>
+  <label>Recipient name<input name="name" required maxlength="100" autocomplete="shipping name"/></label>
+  <label>Phone<input name="phone" required pattern="[+0-9 ]{7,20}" maxlength="20" autocomplete="shipping tel"/></label>
+  <label>Address line 1<input name="line1" required maxlength="200" autocomplete="shipping address-line1"/></label>
+  <label>Address line 2 (optional)<input name="line2" maxlength="200" autocomplete="shipping address-line2"/></label>
+  <label>City<input name="city" required maxlength="100" autocomplete="shipping address-level2"/></label>
+  <label>State<input name="state" required maxlength="100" autocomplete="shipping address-level1"/></label>
+  <label>PIN code<input name="postalCode" required pattern="[1-9][0-9]{5}" maxlength="6" autocomplete="shipping postal-code"/></label>
+  <input type="hidden" name="country" value="IN"/>
+  <button type="button" id="saveAddress" class="btn btn--dark">Save address</button>
+ </fieldset>
+ <button id="quoteOrder" class="btn btn--primary" type="submit">Review order total</button>
+ </form>
+ <p id="quoteSummary"></p><p id="checkoutStatus" role="status" aria-live="polite"></p>
+ <button id="placeOrder" class="btn btn--primary" disabled>Place cash-on-delivery order</button>
+</dialog>
 
 <!-- CART SIDEBAR -->
 <div class="cart-backdrop" id="cartBackdrop"></div>
@@ -294,7 +333,7 @@
 
 <button id="adminBtn" class="btn btn--primary admin-launch hidden">Manage catalog</button>
 <div class="toast" id="toast"></div>
-<script src="3rd.js?v=20261021-password-input-fix"></script>
-<script src="catalog.js?v=20261021-review"></script>
+<script src="3rd.js?v=20261021-fullstack"></script>
+<script src="catalog.js?v=20261021-fullstack"></script>
 </body>
 </html>

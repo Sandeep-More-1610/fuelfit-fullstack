@@ -4,6 +4,9 @@ Thumbs.db
 .env.*
 !.env.example
 node_modules/
+coverage/
+test-results/
+playwright-report/
 
 # Local implementation scratch and verification runtimes
 work/

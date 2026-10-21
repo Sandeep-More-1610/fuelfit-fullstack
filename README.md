@@ -1,38 +1,63 @@
-# FuelFit
+# FuelFit Fullstack
 
-Latest project check and fixes: [REVIEW_NOTES.md](REVIEW_NOTES.md).
+Fitness e-commerce built with HTML, CSS, vanilla JavaScript, Java 21, Spring Boot 4.1.1, Maven Wrapper and MySQL Community Server.
 
-A fitness storefront with an HTML/CSS/vanilla JavaScript frontend and a Java 21, Spring Boot 4.1.1, MySQL backend.
+Repository: https://github.com/Sandeep-More-1610/fuelfit-fullstack
 
-## What works
+## Features
 
-- Registration, BCrypt password hashing, session login/logout, and CSRF protection.
-- Database-backed product browsing, search, categories, filters, sorting, and pagination.
-- ADMIN-only catalog management, archive actions, and inventory updates.
-- A browser-local cart with refreshed stock/option checks. The cart does not reserve stock.
-- Responsive desktop/mobile navigation and account forms.
+- Registration and BCrypt password hashing; cookie sessions, CSRF protection and role-based authorization.
+- MySQL product catalog, search, category/price/stock filters, sorting and pagination.
+- Guest browser cart and account-owned database carts, with safe retryable guest imports.
+- Saved Indian delivery addresses, wishlists and order history.
+- Server-priced checkout, cash-on-delivery orders, stock protection and duplicate-request protection.
+- Customer cancellation before shipping; admin order confirmation, shipping and delivery updates.
+- Admin catalog/category management, archived products, stock updates and conflict detection.
+- Newsletter consent and subscription storage, plus account opt-out. Email delivery is not configured.
+- Additive Flyway migrations; original 15 products retained. Existing stock is never invented or reset.
 
-Checkout/payment, order processing, newsletter delivery, and the footer's support/company/legal destinations are not implemented. The UI reports checkout/newsletter as unavailable rather than pretending to submit them. Do not treat this as an operational store yet.
+## Run on Windows
 
-## Run locally
+1. Read [backend/README.md](backend/README.md), select Java 21 and supply database credentials in your local PowerShell session.
+2. Build with `backend\mvnw.cmd verify` from the backend directory and start the `mysql` profile using the documented script.
+3. From the repository root run `npm run dev` (Node.js 22+). No frontend packages are needed to serve the site.
+4. Open http://127.0.0.1:8859/ and register an account.
+5. Promote your own registered operator account using the offline admin script. Enter real inventory through Manage catalog before testing purchases. Seeded products start with zero stock.
 
-1. Read [backend/README.md](backend/README.md) and [backend/CATALOG_GUIDE.md](backend/CATALOG_GUIDE.md) for Java, MySQL environment variables, migration safety, and startup commands. Start the backend using `backend/scripts/Start-Backend.ps1` after building it. No database password belongs in source.
-2. Serve this folder over HTTP at `http://127.0.0.1:8859` using your local static server. Opening index.html with file:// is insufficient for cookie-based API access. The frontend needs the running backend at `http://127.0.0.1:8080`.
-3. Open the frontend URL. An internet connection is needed for external Google Fonts and Pexels images.
+The database-free `dev` profile is retained for health/security checks. Commerce requires `mysql`; it cannot operate in database-free mode. Frontend and backend must use the same hostname (`127.0.0.1` by default), even though their ports differ.
 
-If you use another frontend origin, set FRONTEND_ORIGIN to that exact URL before starting the backend. Do not mix localhost and 127.0.0.1 for session cookies. The dev profile deliberately has no database-backed auth/catalog; use mysql for the full app.
+The GitHub repository has been renamed. An existing checkout can keep its current folder name. Its remote should be:
 
-## Project files
-
-- `index.html`, `2nd.css`: current UI markup and styles.
-- `3rd.js`, `catalog.js`: authentication, API-backed catalog/admin UI, and local cart behavior.
-- `backend/`: application source, environment-based settings, additive migrations, tests, and PowerShell helpers.
-- `tests/`: frontend/browser regressions and explicitly test-only catalog fixtures.
-- `archive/`: older standalone designs, not the active application.
-- `BACKEND_PLAN.md`: original roadmap; later guides describe the implemented phases.
+```powershell
+git remote set-url origin https://github.com/Sandeep-More-1610/fuelfit-fullstack.git
+```
 
 ## Tests
 
-Run `./mvnw.cmd test` from backend with Java 21 selected. Run `node --test tests/*.test.cjs` from the project folder with Playwright available on NODE_PATH and Microsoft Edge installed. Browser tests require the frontend server. Mocked browser tests do not write to the live database; the real MySQL suite refuses to run except against its explicitly guarded disposable test environment.
+```powershell
+# Backend: Java 21 selected, run from backend/
+.\mvnw.cmd verify
 
-For authentication examples and the complete auth API contract, read [backend/AUTH_GUIDE.md](backend/AUTH_GUIDE.md). Database migrations never drop or overwrite existing account data. No code changes were committed or pushed by this review.
+# Frontend: run from repository root
+npm ci
+npm run test:browser
+```
+
+Browser tests use installed Edge on Windows. For Playwright Chromium, run `npx playwright install chromium` and set `$env:BROWSER_CHANNEL='chromium'`. The normal suites use disposable in-memory H2 or mocked APIs. Real MySQL checkout tests are opt-in and must use an isolated test database; see [backend/FULLSTACK_GUIDE.md](backend/FULLSTACK_GUIDE.md).
+
+## Scope and operational limits
+
+This implements the core cash-on-delivery shopping flow. It does not process card/UPI payments, send email, verify email addresses, recover forgotten passwords by email, integrate couriers, process refunds/returns, or supply business policies for placeholder footer links. Shipping is a fixed INR 299 below INR 6,500 and free from INR 6,500; delivery addresses currently support India only. Inventory is shared across a product's selectable options, matching the existing catalog model.
+
+Use HTTPS, restricted database permissions, backups, mail-based account verification/recovery and abuse protection before a public commercial launch. Local test results do not guarantee bug-free or production-ready software. No paid service or payment provider is required for the implemented flow.
+
+## Project layout
+
+- `index.html`, `2nd.css`, `3rd.js`, `catalog.js`: storefront, account screens and admin screens.
+- `backend/`: backend sources, migration SQL, tests and PowerShell scripts.
+- `tests/`: browser regressions and opt-in MySQL end-to-end tests.
+- `scripts/serve.cjs`: local server exposing only public storefront assets.
+- `archive/`: earlier designs, retained as historical files.
+- `BACKEND_PLAN.md`: original proposal with current progress notes.
+
+Credentials, environment files, dependency folders, logs and generated build outputs are excluded from Git.

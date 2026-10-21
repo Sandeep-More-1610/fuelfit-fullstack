@@ -1,5 +1,7 @@
 # FuelFit backend analysis and development roadmap
 
+> Current progress (21 October 2026): authentication, catalog/admin inventory and core cash-on-delivery commerce are implemented. V4 adds account carts, saved addresses, wishlists, orders, order snapshots and newsletter consent storage. Current contracts, tests and remaining launch requirements are in `backend/FULLSTACK_GUIDE.md`. The original analysis below is retained as historical context; its descriptions of the old plaintext/local-only login and placeholder checkout are not the current implementation. The repository is now `Sandeep-More-1610/fuelfit-fullstack`.
+
 Prepared: 21 October 2026. Status: analysis and proposal only.
 
 ## 1. Scope and project inventory

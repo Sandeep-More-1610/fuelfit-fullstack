@@ -16,7 +16,7 @@ Implemented in the existing HTML/CSS/vanilla JavaScript frontend and Java 21 / S
 - `exception/ApiExceptionHandler.java`: structured 400/404/409 catalog responses without database internals.
 - `config/AdminProvisioning.java`, `application-admin-provision.properties`: explicit offline promotion of one existing account. No public admin signup, default admin or seeded passwords. This profile opens no web server.
 - `application.properties`: rejects fractional values for integer fields instead of silently truncating stock quantities.
-- `backend/pom.xml`: executable output is now `target/fuelfit-backend-phase2.jar`; this avoids overwriting the existing running Phase 1 JAR.
+- `backend/pom.xml`: executable output is now `target/fuelfit-backend.jar`; this avoids overwriting the existing running Phase 1 JAR.
 - `backend/scripts/Start-Backend.ps1`, `Provision-Admin.ps1`, `Verify-MySql.ps1`: environment-based startup, offline promotion and read-only database checks.
 - `backend/src/test/java/com/fuelfit/CatalogIntegrationTests.java`: 14 new backend tests. Existing 16 backend tests remain.
 - `tests/catalog-browser.test.cjs`: 6 real-MySQL browser/session/permission/error-recovery tests. `catalog-mock.cjs` and `fixtures/catalog.json` support isolated browser regressions; application code never falls back to those fixtures.

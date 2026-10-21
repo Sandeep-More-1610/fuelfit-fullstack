@@ -137,7 +137,7 @@ class CatalogIntegrationTests {
   var ds=new org.springframework.jdbc.datasource.DriverManagerDataSource("jdbc:h2:mem:migration_catalog;MODE=MySQL;DB_CLOSE_DELAY=-1","sa","");
   var jdbc=new JdbcTemplate(ds);jdbc.execute("CREATE TABLE users(id BIGINT PRIMARY KEY, name VARCHAR(100))");jdbc.update("INSERT INTO users VALUES (42,'Preserved')");
   var flyway=org.flywaydb.core.Flyway.configure().dataSource(ds).locations("classpath:db/migration").baselineOnMigrate(true).baselineVersion("1").cleanDisabled(true).load();
-  assertThat(flyway.migrate().migrationsExecuted).isEqualTo(2);
+  assertThat(flyway.migrate().migrationsExecuted).isEqualTo(3);
   assertThat(flyway.migrate().migrationsExecuted).isZero();
   assertThat(jdbc.queryForObject("SELECT name FROM users WHERE id=42",String.class)).isEqualTo("Preserved");
   assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM products",Integer.class)).isEqualTo(15);

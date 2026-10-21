@@ -1,221 +1,110 @@
-> Phase 2 catalog and admin features are implemented. See [CATALOG_GUIDE.md](CATALOG_GUIDE.md) for current APIs, migration status, startup, admin provisioning and verification. The current executable is `target/fuelfit-backend-phase2.jar`. The Phase 1 notes below remain as historical setup context.
+# FuelFit backend — full-stack shopping
 
-# FuelFit backend — Phase 1 authentication
+Java 21, Spring Boot 4.1.1, Spring Security, Spring Data JPA, JDBC, MySQL Connector/J, Validation and Flyway. Authentication uses the existing JPA user repository; catalog and commerce use parameterized JDBC transactions. Both use the same managed datasource. No paid dependency or service is required.
 
-This is a Java 21 / Spring Boot 4.1.1 Maven application. Spring Boot 4.1.1 is a stable release compatible with Java 21. It includes Spring Web MVC, Spring Data JPA, Spring Security, Validation, and MySQL Connector/J. Dependencies are managed by Spring Boot in `pom.xml`.
+Read [FULLSTACK_GUIDE.md](FULLSTACK_GUIDE.md) for API contracts, database changes and business rules. [AUTH_GUIDE.md](AUTH_GUIDE.md) and [CATALOG_GUIDE.md](CATALOG_GUIDE.md) record earlier implementation phases.
 
-Registration and login are now implemented with BCrypt and server sessions. See [AUTH_GUIDE.md](AUTH_GUIDE.md) for the migration, API contract, PowerShell examples, file inventory, and verification limits. The frontend's existing modal now uses these APIs; its design is preserved. Product/cart/checkout APIs remain unimplemented.
+## 1. Open the backend folder and select Java 21
 
-## 1. Software found on this PC
-
-- The system default Java was Temurin **25.0.3**, not Java 21.
-- Java 21 was not found in the inspected Java installation folders. A portable Temurin **21.0.12.1+1** JDK was downloaded from Adoptium, its SHA-256 checksum verified, and extracted into the workspace's `work/fuelfit-setup/java21/` folder. No installer, system PATH, registry, or global JAVA_HOME change was made.
-- Maven **3.9.6** exists at `C:\Users\Sandeep More\maven\apache-maven-3.9.6`, but `mvn` was not on PATH.
-- This project includes **Maven Wrapper**, pinned to Maven **3.10.0**. You can run `mvnw.cmd` without installing Maven globally. Its first run requires internet access to download Maven and dependencies into your user cache.
-
-The ZIP and portable JDK are workspace scratch tools, outside this Git repository. They will not be uploaded with the source.
-
-## 2. Open PowerShell and select Java 21
+Open PowerShell in this project's `backend` folder. Check:
 
 ```powershell
-Set-Location 'C:\Users\Sandeep More\Documents\Codex\2026-10-21\fr\outputs\fuelfit-frontend\backend'
-
-# This path is relative to the backend directory on this PC.
-$env:JAVA_HOME = (Resolve-Path '..\..\..\work\fuelfit-setup\java21\jdk-21.0.12.1+1').Path
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
-
 java -version
 .\mvnw.cmd -version
 ```
 
-Both commands should report Java 21. These environment changes apply only to the current PowerShell window. `JAVA_HOME` points to the JDK folder, not its `bin` folder.
-
-If the portable JDK is moved or missing, download a **Windows x64 JDK 21 ZIP** from [Eclipse Temurin](https://adoptium.net/temurin/releases/?version=21), extract it to a folder you choose, and set JAVA_HOME to that extracted JDK folder. A global installation is optional, not necessary. If you prefer an installer, Windows Package Manager can install it with `winget install --id EclipseAdoptium.Temurin.21.JDK -e`; that changes your installed software and has not been run for this project.
-
-You do not need to install Maven again. As an alternative to the wrapper, run the existing Maven with its full path after selecting Java 21:
+Use a Java 21 JDK, such as free Eclipse Temurin. On the original development PC, the portable JDK is already available here; these settings affect only this PowerShell window:
 
 ```powershell
-& 'C:\Users\Sandeep More\maven\apache-maven-3.9.6\bin\mvn.cmd' -version
+$env:JAVA_HOME = 'C:\Users\Sandeep More\Documents\Codex\2026-10-21\fr\work\fuelfit-setup\java21\jdk-21.0.12.1+1'
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+.\mvnw.cmd -version
 ```
 
-## 3. Compile and test
+On a different PC, replace JAVA_HOME with your own JDK 21 directory. Maven Wrapper downloads the pinned Maven version; no system-wide Maven installation is needed.
 
-Run from the backend directory with Java 21 selected:
+## 2. Build and test
+
+Stop your previous backend from its original terminal with Ctrl+C before packaging the same running JAR on Windows.
 
 ```powershell
-.\mvnw.cmd clean verify
+.\mvnw.cmd -B -ntp verify
 ```
 
-This compiles Java, runs the tests, and creates the executable JAR in `target/`. Stop a running copy of this JAR before packaging it on Windows. Six setup tests use the database-free `dev` profile; ten authentication tests use an isolated H2 database under the `test` profile. Neither test suite connects to or clears your MySQL database. H2 tests do not certify MySQL migration compatibility.
+Output: `target\fuelfit-backend.jar`. Backend tests use disposable H2 databases and never your `fuelfit_db`. They cover authentication, catalog, carts, checkout, ownership, rollback, duplicate orders, order status transitions and concurrent stock claims. MySQL-specific verification is separate.
 
-## 4. Start without MySQL
+## 3. Supply your existing MySQL credentials privately
 
-```powershell
-.\mvnw.cmd spring-boot:run '-Dspring-boot.run.profiles=dev'
-```
-
-Wait for the `Started FuelFitBackendApplication` message. The server listens only on the PC's loopback address, port **8080**. Leave this terminal open. Press **Ctrl+C** in that terminal to stop it.
-
-Alternatively, after building:
-
-```powershell
-java -jar .\target\fuelfit-backend-phase2.jar --spring.profiles.active=dev
-```
-
-`0.0.1-SNAPSHOT` describes the version of our work-in-progress application; Spring Boot itself is pinned to stable **4.1.1**.
-
-### Tested Windows startup workaround on this PC
-
-The first live launch inside the desktop command runner failed with `Unable to establish loopback connection`, caused by `UnixDomainSockets.connect0: Invalid argument`. Changing the selector provider alone did not resolve it. Setting Java's temporary Unix-domain socket directory to the existing workspace `work/` folder resolved it; the application then started successfully on port 8080.
-
-If you encounter the same error, this is the **verified working launch command** from the backend directory, after selecting Java 21 in section 2:
-
-```powershell
-$socketTemp = (Resolve-Path '..\..\..\work').Path
-java "-Djdk.net.unixdomain.tmpdir=$socketTemp" -jar .\target\fuelfit-backend-phase2.jar --spring.profiles.active=dev
-```
-
-This changes only that Java process's temporary socket location. It does not change Windows networking, firewall rules, or system environment settings. The general Maven command may work directly in a normal PowerShell terminal; the JAR command above was used for live verification here. If a backend is already running, stop it before launching another copy on the same port.
-
-## 5. Test from a second PowerShell window
-
-```powershell
-$response = Invoke-WebRequest -Uri 'http://localhost:8080/api/health'
-$response.StatusCode
-$response.Content
-```
-
-Expected result:
-
-```text
-200
-{"status":"UP","message":"FuelFit Backend Running"}
-```
-
-This endpoint confirms that the web application is running. It does **not** check MySQL availability in the dev profile.
-
-Requests to protected paths, for example `/api/private` and `/api/auth/me`, return **401 Unauthorized** when not logged in. In the MySQL profile, registration/login POSTs and GET `/api/auth/csrf` are public; POSTs still require a valid CSRF token. Authentication controllers are disabled in database-free `dev`. No demo users/passwords are created.
-
-## 6. Frontend origin and CORS
-
-CORS is the browser's rule for allowing a web page to read responses from a different server. The default allowed origin is exactly:
-
-```text
-http://127.0.0.1:8859
-```
-
-This is the frontend local server URL established earlier in this project. GET and POST requests are allowed; valid browser preflight requests are processed by Spring's CORS support. No unrestricted wildcard is used. An origin includes the scheme, host, and port; `localhost` and `127.0.0.1` count as different origins. Use `127.0.0.1` consistently for the default frontend/backend URLs so session cookies are same-site.
-
-If your frontend server uses a different local URL, stop the backend, set the exact origin in the same PowerShell window, and restart:
-
-```powershell
-$env:FRONTEND_ORIGIN = 'http://localhost:5500'
-.\mvnw.cmd spring-boot:run '-Dspring-boot.run.profiles=dev'
-```
-
-Use the URL actually shown by your frontend server, with no path or trailing slash. Wildcards are rejected. Opening an HTML file directly with `file://` is not this allowed HTTP origin; use a local frontend HTTP server for later integration.
-
-Test the default origin without changing the frontend:
-
-```powershell
-$response = Invoke-WebRequest -Uri 'http://localhost:8080/api/health' -Headers @{ Origin = 'http://127.0.0.1:8859' }
-$response.Headers['Access-Control-Allow-Origin']
-```
-
-Expected: `http://127.0.0.1:8859`. An unlisted origin receives 403 and no allow-origin header. CORS does not replace authentication; command-line programs do not enforce browser CORS rules.
-
-## 7. Profiles: dev now, mysql later
-
-A profile is a named set of application settings.
-
-- `application.properties`: shared application name, loopback address, port 8080, exact CORS origin, and safeguards against automatic SQL/schema execution.
-- `application-dev.properties`: disables datasource, Hibernate, and JPA repository auto-configuration. No connection to MySQL is attempted. `dev` is the default when no profile is explicitly selected.
-- `application-mysql.properties`: enables MySQL persistence and Flyway user-table migration. Do not combine `dev` and `mysql`: the dev exclusions would disable persistence. Read the migration safety notes in AUTH_GUIDE.md before first startup.
-
-The future MySQL profile expects:
-
-- `DB_HOST`: defaults to `localhost`.
-- `DB_PORT`: defaults to `3306`.
-- `DB_NAME`: defaults to the existing `fuelfit_db` database.
-- `DB_USERNAME`: required database user.
-- `DB_PASSWORD`: required password, with no hardcoded fallback.
-
-For a later step only, once a database exists and connection setup is authorized:
+Your existing database is `fuelfit_db` on localhost:3306 and the database user is `fuelfit_user`. Do not recreate or reset them. The MySQL Windows service must be running.
 
 ```powershell
 $env:DB_HOST = 'localhost'
 $env:DB_PORT = '3306'
-$env:DB_NAME = Read-Host 'Existing database name'
-$env:DB_USERNAME = Read-Host 'Database username'
-# Read without putting the password in your command history.
-$securePassword = Read-Host 'Database password' -AsSecureString
-$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $securePassword).Password
-.\mvnw.cmd spring-boot:run '-Dspring-boot.run.profiles=mysql'
-# After stopping the process:
+$env:DB_NAME = 'fuelfit_db'
+$env:DB_USERNAME = 'fuelfit_user'
+$privatePassword = Read-Host 'MySQL password for fuelfit_user' -AsSecureString
+$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $privatePassword).Password
+$env:FRONTEND_ORIGIN = 'http://127.0.0.1:8859'
+.\scripts\Start-Backend.ps1
+```
+
+The password is not printed or placed in shell command history. Environment variables remain private to this terminal and its child processes; do not save them in Git or include them in screenshots. A `.env` file is not automatically loaded.
+
+The script runs the `mysql` profile at `127.0.0.1:8080`. To use another port, pass `-Port 8081` and configure the frontend API origin accordingly. The script includes the Java socket workaround needed on this Windows PC.
+
+On startup, Flyway validates previously applied migrations and adds V4 once. Hibernate validates the user mapping and does not create/update/drop tables. Never enable Flyway clean, automatically baseline an unknown database, delete migration history, or edit already-applied V1–V3 SQL. Back up your real database before applying a new release. If a new table name already exists, stop and inspect that conflict rather than dropping it.
+
+After stopping the backend:
+
+```powershell
 Remove-Item Env:DB_PASSWORD
 ```
 
-The MySQL profile needs a running database and valid credentials. Hibernate uses `ddl-auto=validate`, never create/update/drop. Flyway alone applies `V1__create_users.sql` once and tracks its checksum. There is no database auto-creation or seed account. A `.env` file is **not automatically loaded** by Spring Boot; use environment variables in the process launching the server. See AUTH_GUIDE.md for the verified socket-directory startup setting and safe handling of an existing nonempty schema.
+## 4. Start the storefront
 
-## 8. Initial setup file inventory and purpose
+In another PowerShell window, open the repository root:
 
-The list below records the initial setup. Phase 1 additions and modifications are listed separately in AUTH_GUIDE.md.
-
-```text
-backend/
-  .gitattributes                  Wrapper line-ending rules from Spring Initializr
-  .gitignore                      Ignores secrets, .env files, IDE files, logs, target/
-  HELP.md                         Generated Spring Initializr reference links (Git-ignored)
-  README.md                       These PowerShell instructions
-  pom.xml                         Java 21, stable Spring Boot, dependencies, build plugin
-  mvnw                            Maven Wrapper for Unix-like shells
-  mvnw.cmd                        Maven Wrapper for Windows
-  .mvn/wrapper/maven-wrapper.properties   Maven download/version settings
-  src/main/java/com/fuelfit/
-    FuelFitBackendApplication.java Main application entry point
-    controller/HealthController.java       GET /api/health
-    dto/HealthResponse.java                JSON response fields
-    config/CorsConfig.java                 One exact allowed frontend origin
-    config/SecurityConfig.java             Public health; all other paths protected
-    service/package-info.java              Reserved business-logic package
-    repository/package-info.java           Reserved database-access package
-    entity/package-info.java               Reserved database-mapping package
-    exception/package-info.java            Reserved error-handling package
-  src/main/resources/
-    application.properties
-    application-dev.properties
-    application-mysql.properties
-  src/test/java/com/fuelfit/
-    FuelFitBackendApplicationTests.java    Six setup/security tests
+```powershell
+npm run dev
 ```
 
-`package-info.java` preserves the package layout. Phase 1 adds a real auth service, user entity, and user repository. The health endpoint itself still reads no database.
+Open http://127.0.0.1:8859/. Node.js 22+ is required. There is no framework or frontend build step. Serving the whole repository with a generic public file server is discouraged because it can expose backend sources and local files; the included server allows only the public storefront files.
 
-Build output, compiled classes, the executable JAR, and test reports are generated under `target/` and ignored by Git. Spring Initializr also creates empty `static/` and `templates/` resource directories; no frontend was copied there. Maven/Java download caches are tool files, not application source.
+Use `127.0.0.1` for both browser/API hosts. Cookie sessions may fail if `localhost` and `127.0.0.1` are mixed. Requests use credentials and fresh CSRF tokens. CORS allows one exact configured frontend origin, never a wildcard.
 
-## 9. Troubleshooting
+## 5. Verify health and the actual database
 
-- **Wrong Java version / invalid target release 21:** repeat section 2 in the terminal that launches Maven, then check `.\mvnw.cmd -version`.
-- **mvn not recognized:** use `.\mvnw.cmd`; no global PATH change is necessary.
-- **First build cannot download dependencies:** check your internet/proxy configuration and rerun `.\mvnw.cmd clean verify`. Do not disable TLS verification.
-- **Port 8080 already in use:** inspect `Get-NetTCPConnection -LocalPort 8080 -State Listen`. Stop your own earlier backend terminal with Ctrl+C; do not terminate an unknown process.
-- **Missing DB variables or connection refused:** ensure the active profile is `dev` for this step. MySQL is intentionally unnecessary here.
-- **CORS 403:** match the frontend URL exactly using FRONTEND_ORIGIN, then restart. Do not replace the allowlist with `*`.
+```powershell
+$response = Invoke-WebRequest 'http://127.0.0.1:8080/api/health'
+$response.StatusCode
+$response.Content
+.\scripts\Verify-MySql.ps1
+```
 
-Official references: [Spring Initializr](https://start.spring.io/), [Spring Boot system requirements](https://docs.spring.io/spring-boot/system-requirements.html), [Eclipse Temurin downloads](https://adoptium.net/temurin/releases/?version=21), and [Maven Wrapper](https://maven.apache.org/wrapper/).
+Health should return HTTP 200 with `{"status":"UP","message":"FuelFit Backend Running"}`. The verification script connects to MySQL and reads version, migrations, product/stock counts and commerce table counts; health alone is not a database test. It requires the credential variables from section 3 and the installed free MySQL CLI.
 
-## 10. Historical initial-setup verification on 21 October 2026
+`GET /` remains protected and returns 401 while signed out. The storefront is served from the frontend server, not the API root.
 
-- Maven Wrapper: Maven 3.10.0 running with Temurin Java 21.0.12.1.
-- `.\mvnw.cmd -B -ntp clean verify`: **BUILD SUCCESS**; six tests, zero failures, zero errors, zero skipped.
-- Packaged JAR started using the socket-directory workaround above; startup log confirmed default profile `dev`, Java 21, and Tomcat on port 8080.
-- `GET http://localhost:8080/api/health`: **200**, actual body `{"status":"UP","message":"FuelFit Backend Running"}`.
-- `GET /api/private`: **401**.
-- Health request with `Origin: http://127.0.0.1:8859`: **200**, matching `Access-Control-Allow-Origin` header.
-- OPTIONS preflight for that origin and GET: **200**.
-- Health request with `Origin: http://localhost:9999`: **403**, no allow-origin header.
-- The dev-profile test confirmed no DataSource bean exists. No MySQL connection, database, or tables were required or created.
-- Git ignore checks confirmed generated build output, environment files, secret configuration, and logs are ignored.
-- The test runner printed non-fatal Mockito/Java agent warnings. The six tests still passed; these were test-tool warnings, not application startup errors.
+## 6. Set up your operator account and real stock
 
-For current Phase 1 results and startup instructions, use AUTH_GUIDE.md. Products, cart, checkout, and admin APIs are outside this phase.
+Register your own account in the website, then run this offline command with the same database environment variables:
+
+```powershell
+.\scripts\Provision-Admin.ps1 -Email 'your-registered-email@example.com'
+```
+
+Replace that address with your own registered account. This promotes an existing account; it does not create an account, choose a password, or expose an admin signup API. Log out and sign back in to obtain the ADMIN role in your session. Manage catalog lets you set real stock, edit products/categories and process orders. Seed data does not invent inventory or create default admin accounts.
+
+## 7. Database-free development profile
+
+```powershell
+java -jar .\target\fuelfit-backend.jar --spring.profiles.active=dev
+```
+
+This preserves the original no-database health/security setup. It intentionally has no authentication, catalog or commerce controllers. Do not combine `dev` and `mysql` profiles.
+
+## Verification and limits
+
+See [FULLSTACK_GUIDE.md](FULLSTACK_GUIDE.md) for the latest actual test results and opt-in MySQL test instructions. Real-store credentials were not available in the development agent's environment, so the new commerce migration was verified on an isolated MySQL 8.0.46 instance. The existing live backend on 8080 was left running. To activate these changes on `fuelfit_db`, restart it using section 3 with your existing password; never paste that password into chat.
+
+Cash on delivery is the only implemented payment method. Newsletter signup stores consent but sends no email. Account verification, emailed password reset, courier/refund integrations and public-launch operational hardening remain outside this release. HTTPS deployment should set `SESSION_COOKIE_SECURE=true`; local HTTP development leaves it false.

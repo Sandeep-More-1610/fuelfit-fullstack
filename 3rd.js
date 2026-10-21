@@ -47,11 +47,13 @@ async function restoreSession() {
   const version = authVersion;
   let restored = null;
   try { restored = await authRequest('/me'); } catch(e) {}
-  if (version === authVersion) { user = restored; updateLoginUI(); }
+  if (version === authVersion) { user = restored; updateLoginUI(); if (user && typeof syncAccountCart === 'function') await syncAccountCart(); }
 }
 
 function updateLoginUI() {
   const loggedIn = !!user;
+  if ($('accountBtn')) $('accountBtn').classList.toggle('hidden', !loggedIn);
+  if (typeof accountVisibility === 'function') accountVisibility();
   if ($('adminBtn')) $('adminBtn').classList.toggle('hidden', user?.role !== 'ADMIN');
   if (user?.role !== 'ADMIN' && $('adminPage')) {
     $('adminPage').classList.add('hidden');
@@ -73,6 +75,7 @@ let cart = [];
 try { const stored = JSON.parse(localStorage.getItem('ff-cart')); cart = Array.isArray(stored) ? stored.filter(i => i && typeof i.pid === 'string' && typeof i.key === 'string' && typeof i.size === 'string' && typeof i.color === 'string' && Number.isInteger(i.qty) && i.qty > 0 && i.qty <= 1000000000) : []; } catch(e) {}
 
 function saveCart() {
+  if (user && typeof syncAccountCart === 'function') { updateCartBadge(); return; }
   try { localStorage.setItem('ff-cart', JSON.stringify(cart)); }
   catch(e) { toast('Your browser could not save the cart. Keep this page open.', 'error'); }
   updateCartBadge();
@@ -111,11 +114,13 @@ async function refreshCartProducts() {
 }
 
 function addToCart(pid, size, color, qty) {
+  if (user && typeof commerceAdd === 'function') return commerceAdd(pid,size,color,qty);
   const p = PRODUCTS.find(p => p.id === pid);
-  if (!p || !p.active || !p.inStock || !Number.isInteger(qty) || qty < 1 || qty > p.stock || !validOption(p.sizes,size) || !validOption(p.colors,color)) { toast('Requested quantity is unavailable', 'error'); return; }
+  if (!p || !p.active || !p.inStock || !Number.isInteger(qty) || qty < 1 || qty > Math.min(99,p.stock) || !validOption(p.sizes,size) || !validOption(p.colors,color)) { toast('Choose an available quantity between 1 and 99', 'error'); return; }
   const key = JSON.stringify([pid, size, color]);
   // Compare the actual options so older saved cart keys continue to merge correctly.
   const existing = cart.find(i => i.pid === pid && i.size === size && i.color === color);
+  if (existing && existing.qty + qty > 99) { toast('Maximum 99 per option combination', 'error'); return; }
   if (cart.filter(i => i.pid === pid).reduce((n,i) => n + i.qty, 0) + qty > p.stock) { toast('Requested quantity is unavailable', 'error'); return; }
   if (existing) existing.qty += qty;
   else cart.push({ key, pid, size, color, qty });
@@ -124,11 +129,12 @@ function addToCart(pid, size, color, qty) {
   toast('✓ ' + p.name + ' added to cart', 'success');
 }
 
-function removeItem(key) { cart = cart.filter(i => i.key !== key); saveCart(); renderCart(); }
+function removeItem(key) { if (user && typeof commerceRemove === 'function') return commerceRemove(key); cart = cart.filter(i => i.key !== key); saveCart(); renderCart(); }
 
 function changeQty(key, d) {
+  if (user && typeof commerceQuantity === 'function') return commerceQuantity(key,d);
   const item = cart.find(i => i.key === key);
-  if (item) { const p = PRODUCTS.find(p => p.id === item.pid); if (d > 0 && (!p || cart.filter(i => i.pid === item.pid).reduce((n,i) => n + i.qty, 0) >= p.stock)) { toast('Requested quantity is unavailable', 'error'); return; } item.qty = Math.max(1, item.qty + d); saveCart(); renderCart(); }
+  if (item) { const p = PRODUCTS.find(p => p.id === item.pid); if (d > 0 && (!p || item.qty >= 99 || cart.filter(i => i.pid === item.pid).reduce((n,i) => n + i.qty, 0) >= p.stock)) { toast('Requested quantity is unavailable (maximum 99 per option)', 'error'); return; } item.qty = Math.min(99,Math.max(1, item.qty + d)); saveCart(); renderCart(); }
 }
 
 const cartTotal = () => cart.reduce((s, i) => { const p = PRODUCTS.find(p => p.id === i.pid); return s + (cartItemAvailable(i) ? p.price * i.qty : 0); }, 0);
@@ -188,6 +194,12 @@ function renderCart() {
   $('cartSubtotalVal').textContent = inr(sub);
   $('cartShippingVal').textContent = shipping === 0 ? 'FREE' : inr(shipping);
   $('cartTotal').textContent = inr(sub + shipping);
+  if (user && typeof serverCart !== 'undefined' && serverCart) {
+    $('cartSubtotalVal').textContent = inr(serverCart.subtotal);
+    $('cartShippingVal').textContent = serverCart.shipping ? inr(serverCart.shipping) : 'FREE';
+    $('cartTotal').textContent = inr(serverCart.total);
+    $('checkoutBtn').disabled ||= !serverCart.available;
+  }
   foot.style.display = '';
 }
 
@@ -196,6 +208,7 @@ let currentPage = 'home', activeCategory = 'all', sortBy = 'featured', prevCat =
 let detailRequestVersion = 0;
 
 function navigate(page) {
+  if ($('accountPage')) $('accountPage').classList.add('hidden');
   detailRequestVersion++;
   currentPage = page;
   $('adminPage').classList.add('hidden');
@@ -322,10 +335,11 @@ function renderProduct(pid) {
         </div>
       </div>
       <button class="btn btn--primary w-full" id="addBtn" style="padding:1.05rem;font-size:.95rem;letter-spacing:1px">🛒 Add to Cart</button>
+      <button class="btn btn--dark w-full" data-wish="${esc(p.id)}">Save to wishlist</button>
       <div class="pd-perks">
         <div class="pd-perk"><span class="pd-perk__icon">✓</span>Free shipping on orders over ₹6,500</div>
         <div class="pd-perk"><span class="pd-perk__icon">✓</span>30-day hassle-free return policy</div>
-        <div class="pd-perk"><span class="pd-perk__icon">✓</span>Secure checkout — 256-bit SSL encrypted</div>
+        <div class="pd-perk"><span class="pd-perk__icon">✓</span>Cash on delivery — no online payment required</div>
         <div class="pd-perk"><span class="pd-perk__icon">✓</span>Third-party quality tested</div>
       </div>
     </div>`;
@@ -344,7 +358,7 @@ function renderProduct(pid) {
   $('addBtn').disabled = !p.inStock;
   $('addBtn').textContent = p.inStock ? '🛒 Add to Cart' : 'Out of stock';
   $('qtyD').onclick = () => { qty = Math.max(1, qty - 1); $('qtyN').textContent = qty; };
-  $('qtyI').onclick = () => { qty = Math.min(p.stock || 1, qty + 1); $('qtyN').textContent = qty; };
+  $('qtyI').onclick = () => { qty = Math.min(99, p.stock || 1, qty + 1); $('qtyN').textContent = qty; };
   $('addBtn').onclick = async () => {
     try { cacheProducts([await catalogRequest('/products/' + encodeURIComponent(p.id))]); addToCart(p.id, size, color, qty); }
     catch(e) { toast(e.message, 'error'); }
@@ -354,6 +368,7 @@ function renderProduct(pid) {
 /* ===== OVERLAYS ===== */
 let cartReturnFocus = null, searchReturnFocus = null;
 function openCart() {
+  if (user && typeof syncAccountCart === 'function' && !commerceBusy) syncAccountCart(false);
   if (!$('cartSidebar').classList.contains('open')) cartReturnFocus = document.activeElement;
   $('cartSidebar').inert = false;
   $('cartSidebar').setAttribute('aria-hidden', 'false');
@@ -447,6 +462,7 @@ async function handleLogin() {
   try {
     user = await authRequest('/login', { email, password: pass });
     updateLoginUI(); closeModal();
+    if (typeof syncAccountCart === 'function') await syncAccountCart();
     toast('🎉 Welcome back, ' + user.name.split(' ')[0] + '!', 'success');
   } catch(e) { showErr('loginPassErr', e.status ? e.message : 'Cannot reach the backend. Please try again.'); }
   finally { authPending = false; $('loginSubmitBtn').disabled = false; $('loginPassword').value = ''; }
@@ -470,6 +486,7 @@ async function handleSignup() {
     $('loginEmail').value = email;
     user = await authRequest('/login', { email, password: pass });
     updateLoginUI(); closeModal();
+    if (typeof syncAccountCart === 'function') await syncAccountCart();
     toast('🎉 Welcome to FuelFit, ' + name.split(' ')[0] + '!', 'success');
   } catch(e) {
     if (!$('loginFormWrap').classList.contains('hidden')) {
@@ -569,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Checkout
   $('checkoutBtn').onclick = () => {
     if (!user) { closeCart(); openModal('login'); toast('Please login to proceed to checkout'); }
-    else toast('Checkout is not available yet. Your cart has been kept.');
+    else if (typeof openCheckout === 'function') openCheckout();
   };
 
   // Shop
@@ -578,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('backBtn').onclick = () => navigate(prevCat !== 'all' ? prevCat : 'shop');
 
   // Newsletter
-  $('newsletterForm').onsubmit = e => { e.preventDefault(); $('newsletterMsg').textContent = 'Newsletter signup is not available yet. Your email has not been submitted.'; };
+  $('newsletterForm').onsubmit = e => { e.preventDefault(); if(typeof subscribeNewsletter === 'function') subscribeNewsletter(e.target); };
 
   // Keyboard + scroll
   document.onkeydown = e => {

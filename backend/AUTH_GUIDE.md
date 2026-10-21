@@ -55,7 +55,7 @@ $secret = Read-Host 'MySQL password for fuelfit_user' -AsSecureString
 $env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $secret).Password
 $socketTemp = (Resolve-Path '..\..\..\work').Path
 try {
-    java "-Djdk.net.unixdomain.tmpdir=$socketTemp" -jar .\target\fuelfit-backend-phase2.jar --spring.profiles.active=mysql
+    java "-Djdk.net.unixdomain.tmpdir=$socketTemp" -jar .\target\fuelfit-backend.jar --spring.profiles.active=mysql
 }
 finally {
     Remove-Item Env:DB_PASSWORD -ErrorAction SilentlyContinue

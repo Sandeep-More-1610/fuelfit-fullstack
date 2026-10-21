@@ -75,3 +75,4 @@ Temporary review backends and the isolated MySQL process were stopped after test
 ## Subsequent password-field fix
 
 The actual in-app browser exposed a typing bug that fill-based browser tests had missed: both password DOM `onkeydown` callbacks returned false on ordinary keys, cancelling text entry. The shared `onPasswordEnter` helper now intercepts only Enter and leaves typing, deletion, navigation, and Tab keys alone. All eight focused authentication tests passed after this change. Asset version query strings ensure the browser loads the corrected JavaScript and current styles rather than cached earlier files. The browser form was reopened for the user; no password was read, set, or submitted by the agent.
+> Full-stack update: see `backend/FULLSTACK_GUIDE.md` for the subsequent commerce implementation and latest verification. Review findings below describe the earlier catalog/authentication release.

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 let browser;
 const base = process.env.FUELFIT_URL || 'http://127.0.0.1:8859/';
-before(async () => { browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true }); });
+before(async () => { browser = await chromium.launch(require('./browser-options.cjs')); });
 after(async () => { await browser?.close(); });
 
 async function openPage(width, height) {
