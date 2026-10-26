@@ -1,10 +1,6 @@
 # FuelFit
 
-A full-stack fitness e-commerce portfolio project covering authentication, product discovery, persistent carts, and cash-on-delivery order processing. Built by **Sandeep More**, Computer Science and Engineering student at VIT Vellore.
-
-Fitness e-commerce built with HTML, CSS, vanilla JavaScript, Java 21, Spring Boot 4.1.1, Maven Wrapper and MySQL Community Server.
-
-Repository: https://github.com/Sandeep-More-1610/fuelfit-fullstack
+A fitness e-commerce portfolio project built with HTML, CSS, vanilla JavaScript, Java 21, Spring Boot 4.1.1, and MySQL. It covers authentication, product discovery, persistent carts, and cash-on-delivery order processing.
 
 ## Engineering highlights
 
@@ -34,12 +30,6 @@ Repository: https://github.com/Sandeep-More-1610/fuelfit-fullstack
 5. Promote your own registered operator account using the offline admin script. Enter real inventory through Manage catalog before testing purchases. Seeded products start with zero stock.
 
 The database-free `dev` profile is retained for health/security checks. Commerce requires `mysql`; it cannot operate in database-free mode. Frontend and backend must use the same hostname (`127.0.0.1` by default), even though their ports differ.
-
-The GitHub repository has been renamed. An existing checkout can keep its current folder name. Its remote should be:
-
-```powershell
-git remote set-url origin https://github.com/Sandeep-More-1610/fuelfit-fullstack.git
-```
 
 ## Documentation
 
