@@ -1,8 +1,17 @@
-# FuelFit Fullstack
+# FuelFit
+
+A full-stack fitness e-commerce portfolio project covering authentication, product discovery, persistent carts, and cash-on-delivery order processing. Built by **Sandeep More**, Computer Science and Engineering student at VIT Vellore.
 
 Fitness e-commerce built with HTML, CSS, vanilla JavaScript, Java 21, Spring Boot 4.1.1, Maven Wrapper and MySQL Community Server.
 
 Repository: https://github.com/Sandeep-More-1610/fuelfit-fullstack
+
+## Engineering highlights
+
+- **Account security:** BCrypt password hashing, cookie sessions, CSRF checks, and ADMIN-only catalog/order operations.
+- **Checkout correctness:** server-calculated totals, transaction-scoped stock locking, order snapshots, and idempotency keys for safe retries.
+- **Database evolution:** versioned Flyway migrations and separate disposable test databases.
+- **Framework-free frontend:** HTML, CSS, and vanilla JavaScript connected to a Java Spring Boot API. The active storefront does not use React.
 
 ## Features
 
@@ -32,6 +41,13 @@ The GitHub repository has been renamed. An existing checkout can keep its curren
 git remote set-url origin https://github.com/Sandeep-More-1610/fuelfit-fullstack.git
 ```
 
+## Documentation
+
+- [Backend startup](backend/README.md)
+- [Full-stack API and business rules](backend/FULLSTACK_GUIDE.md)
+- [Authentication](backend/AUTH_GUIDE.md) and [catalog](backend/CATALOG_GUIDE.md) implementation notes
+- [Historical review](REVIEW_NOTES.md), which predates the subsequent commerce implementation
+
 ## Tests
 
 ```powershell
@@ -44,6 +60,10 @@ npm run test:browser
 ```
 
 Browser tests use installed Edge on Windows. For Playwright Chromium, run `npx playwright install chromium` and set `$env:BROWSER_CHANNEL='chromium'`. The normal suites use disposable in-memory H2 or mocked APIs. Real MySQL checkout tests are opt-in and must use an isolated test database; see [backend/FULLSTACK_GUIDE.md](backend/FULLSTACK_GUIDE.md).
+
+### Latest local verification
+
+On 26 October 2026, Java 21/Maven Wrapper verify passed all 48 backend tests. The standard frontend/browser suite passed 39 tests; six opt-in MySQL cases were skipped. This rerun used disposable H2/mocked APIs and did not repeat the real-MySQL commerce checks recorded in FULLSTACK_GUIDE.md.
 
 ## Scope and operational limits
 
@@ -61,3 +81,9 @@ Use HTTPS, restricted database permissions, backups, mail-based account verifica
 - `BACKEND_PLAN.md`: original proposal with current progress notes.
 
 Credentials, environment files, dependency folders, logs and generated build outputs are excluded from Git.
+
+## Author
+
+**Sandeep More** | VIT Vellore | Expected graduation August 2028
+
+[GitHub](https://github.com/Sandeep-More-1610) | [LinkedIn](https://www.linkedin.com/in/sandeep-more-a0799232a/)

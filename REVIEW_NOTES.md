@@ -1,5 +1,7 @@
 # FuelFit project review and fixes
 
+> Historical record: this review predates the commerce implementation. Checkout, persistent account carts, orders, and newsletter storage now exist. See [the current README](README.md) and [FULLSTACK_GUIDE.md](backend/FULLSTACK_GUIDE.md) for current behavior and verification.
+
 Review date: 21 October 2026. Scope: active frontend, Java backend, configuration, migration scripts, tests, PowerShell helpers, documentation, and archived-design inventory. Existing unrelated working-tree edits were retained. No commit or push was made.
 
 ## Confirmed issues fixed

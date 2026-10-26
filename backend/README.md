@@ -13,10 +13,10 @@ java -version
 .\mvnw.cmd -version
 ```
 
-Use a Java 21 JDK, such as free Eclipse Temurin. On the original development PC, the portable JDK is already available here; these settings affect only this PowerShell window:
+Use a Java 21 JDK, such as free Eclipse Temurin. Set JAVA_HOME to your own JDK 21 installation; these settings affect only this PowerShell window:
 
 ```powershell
-$env:JAVA_HOME = 'C:\Users\Sandeep More\Documents\Codex\2026-10-21\fr\work\fuelfit-setup\java21\jdk-21.0.12.1+1'
+$env:JAVA_HOME = 'C:\path\to\your\jdk-21'
 $env:Path = "$env:JAVA_HOME\bin;$env:Path"
 .\mvnw.cmd -version
 ```
